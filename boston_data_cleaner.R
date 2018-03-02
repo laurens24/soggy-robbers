@@ -22,7 +22,12 @@ boston.data$Violent = boston.data$OFFENSE_CODE_GROUP == "THREATS TO DO BODILY HA
   boston.data$OFFENSE_CODE_GROUP == "Homicide"| boston.data$OFFENSE_CODE_GROUP == "Burglary - No Property Taken"
   
 colnames(boston.data)[colnames(boston.data) == "INCIDENT_NUMBER"] <- "ID"
-colnames(boston.data)[colnames(boston.data) == "OCCURRED_ON_DATE"] <- "Date"
+
+boston.data <- mutate(boston.data, Datetype = as.Date(substr(boston.data$OCCURRED_ON_DATE, 1, 10), '%Y-%m-%d'))
+
+colnames(boston.data)[colnames(boston.data) == "Datetype"] <- "Date"
+
+boston.data <- filter(boston.data, Date <= as.Date("02/08/2018", "%m/%d/%Y"))
 
 boston.data <- select(boston.data, ID, Date, Location, Violent)
 
