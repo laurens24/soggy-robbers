@@ -18,8 +18,8 @@ my.ui <- fluidPage(
       tabsetPanel( type = "tabs",
                    tabPanel("Home"),
                    tabPanel("Boston", plotOutput("Boston.bar"), plotOutput("Boston.map")), 
-                   tabPanel("San Francisco", plotOutput("SF.bar"), plotOutput("SF.map")), 
-                   tabPanel("Los Angeles", plotOutput("LA.bar"), plotOutput("LA.bar")),
+                   tabPanel("San Francisco", plotOutput("SF.bar"), plotOutput('SF.map')), 
+                   tabPanel("Los Angeles", plotOutput("LA.bar"), plotOutput("LA.map")),
                    tabPanel("Chicago", plotOutput("Chicago.bar"), plotOutput("Chicago.map"))
       )
     )
