@@ -1,14 +1,18 @@
 library('shiny')
+library(dplyr)
+library(ggplot2)
+library(ggmap)
 
-ui <- fluidPage(
+my.ui <- fluidPage(
   titlePanel('Creative Title'),
   sidebarLayout(
     sidebarPanel(
       sliderInput('max.precip', label = "Max amount of precipitation", 
                   min = 0, max = 5, value = 5),
-      checkboxGroupInput('violence', label = "Crimes Included", choices = c("Violent" = "Violent", 
-                                                                     "Nonviolent" = "Nonviolent"), 
-                  selected = c("Violent", "Nonviolent"))
+      radioButtons('violence', label = "Crimes Included", choices = c("Violent" = "Violent", 
+                                                                      "Nonviolent" = "Nonviolent",
+                                                                      "Both" = "Both"), 
+                   selected = c("Both"))
     ),
     mainPanel(
       tabsetPanel( type = "tabs",
@@ -21,5 +25,7 @@ ui <- fluidPage(
     )
   )
 )
+
+
 
 
