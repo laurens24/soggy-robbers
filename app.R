@@ -2,4 +2,4 @@ source("server.R")
 source("ui.R")
 
 # Creates the Shiny app
-shinyApp(ui = ui, server = server)
+shinyApp(ui = my.ui, server = my.server)
