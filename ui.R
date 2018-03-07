@@ -8,7 +8,7 @@ my.ui <- fluidPage(
                   min = 0, max = 5, value = c(0, 5)), 
       radioButtons('violence', label = "Crimes Included", choices = c("Violent" = "Violent", 
                                                                      "Nonviolent" = "Nonviolent", 
-                                                                     "Both" = "Both")
+                                                                     "Both" = "Violent and Nonviolent")
 
                   )
     ),
