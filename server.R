@@ -157,41 +157,48 @@ my.server <- function(input, output) {
   san.fran.crime$long <- sapply(san.fran.crime$Location, GetY)
   
   sf.weather <- all.weather %>% filter(STATION == "US1CASF0004")
-  sf.weather <- sf.weather %>% mutate(as.date = as.Date(DATE))
+  sf.crime.with.weather <- left_join(san.fran.crime, sf.weather, by=c("Date" = "DATE")) %>% 
+    distinct(ID, .keep_all = TRUE)
+  sf.weather <- sf.weather[, 1:4]
+  sf.weather <- sf.weather %>% filter(!is.na(PRCP))
+  
+  output$SF.bar <- renderPlot({
+    return(GetBar(san.fran.crime, sf.weather, max.precip(), min.precip(), violence()))
+  })
   
   output$SF.map <- renderPlot({
+    map <- get_map("san francisco, california", zoom = 12)
+    return(GetMap(sf.crime.with.weather, violence(), max.precip(), min.precip(), map))
+  })
+ 
+  ############# LA #################
+  la.crime <- read.csv("data/los_angeles_crime.csv", stringsAsFactors = FALSE)
+  la.crime <- filter(la.crime, Date <= as.Date("02/08/2018", format="%m/%d/%Y"))
+  la.weather <- read.csv("data/LAsantamonica_weather.csv", stringsAsFactors = FALSE)
+  la.weather <- filter(la.weather, !is.na(PRCP))
+  
+  output$LA.bar <- renderPlot({
+    GetBar(la.crime, la.weather, max.precip(), min.precip(), violence())
+  })
+  
+  la2.crime <- read.csv("data/los_angeles_crime.csv", stringsAsFactors = FALSE)
+  la2.crime$lat <- sapply(la2.crime$Location, GetX)
+  la2.crime$long <- sapply(la2.crime$Location, GetY)
+  
+  output$LA.map <- renderPlot({
     
     violence <- violence()
     max.precip <- max.precip()
     min.precip <- min.precip()
     
-    map <- get_map("san francisco, california", zoom = 12)
+    map <- get_map("los angeles, california", zoom = 12)
     
-    san.fran.crime <- left_join(san.fran.crime, sf.weather, by=c("Date" = "DATE")) %>% 
+    la2.crime <- left_join(la2.crime, la.weather, by= c("Date"="DATE")) %>% 
       distinct(ID, .keep_all = TRUE)
     
-    return(GetMap(san.fran.crime, violence, max.precip, min.precip, map))
+    return(GetMap(la2.crime, violence, max.precip, min.precip, map))
     
   })
- 
-  ############# LA #################
-  crime <- read.csv("data/los_angeles_crime.csv", stringsAsFactors = FALSE)
-  weather <- read.csv("data/LAsantamonica_weather.csv", stringsAsFactors = FALSE)
-  weather <- filter(weather, !is.na(PRCP))
-  
-  avg.violent <- filter(crime, Violent == TRUE) %>% group_by(Date) %>% summarize(total = n())
-  avg.violent <- avg.violent[c(1:770), ]
-  
-  avg.v.num <- sum(avg.violent$total) / nrow(avg.violent)
-  colnames(avg.violent) <- c("Date", "Violent.total")
-  
-  avg.nonviolent <- filter(crime, Violent == FALSE) %>% group_by(Date) %>% summarize(total = n())
-  avg.nonviolent <- avg.nonviolent[c(1:770), ]
-  
-  avg.nv.num <- sum(avg.nonviolent$total) / nrow(avg.nonviolent)
-  colnames(avg.nonviolent) <- c("Date", "Nonviolent.total")
-
-
 
   ############# CHICAGO ############
   ch.crime <- read.csv("data/Chicago_Crime_Data.csv", stringsAsFactors = FALSE)
