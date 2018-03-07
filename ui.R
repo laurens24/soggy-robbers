@@ -1,6 +1,6 @@
 library('shiny')
 
-ui <- fluidPage(
+my.ui <- fluidPage(
   titlePanel('Creative Title'),
   sidebarLayout(
     sidebarPanel(
@@ -9,6 +9,7 @@ ui <- fluidPage(
       radioButtons('violence', label = "Crimes Included", choices = c("Violent" = "Violent", 
                                                                      "Nonviolent" = "Nonviolent", 
                                                                      "Both" = "Both")
+
                   )
     ),
     mainPanel(
@@ -22,5 +23,7 @@ ui <- fluidPage(
     )
   )
 )
+
+
 
 
