@@ -17,13 +17,10 @@ GetY <- function(coordinates) {
   return(as.numeric(y))
 }
 
-
+# SF Data Manipulation
 san.fran.crime <- read.csv("data/san_francisco_crime.csv", stringsAsFactors = FALSE)
 san.fran.crime$lat <- sapply(san.fran.crime$Location, GetX)
 san.fran.crime$long <- sapply(san.fran.crime$Location, GetY)
-
-
-san.fran.map <- get_map("san francisco, california", zoom = 12)
 
 san.fran.crime <- mutate(san.fran.crime, short.lat = round(lat, 3), short.long = round(long, 3))
 san.fran.plot.val <- select(san.fran.crime, short.lat, short.long) %>% 
@@ -33,8 +30,25 @@ sf.weather <- read.csv("data/othercities_weather.csv", stringsAsFactors = FALSE)
 sf.weather <- sf.weather %>% filter(STATION == "US1CASF0004")
 sf.weather <- sf.weather %>% mutate(as.date = as.Date(DATE))
 
-
-max.precip <- max(sf.weather$PRCP)
+# Returns the map 
+GetMap <- function(crime.with.weather, violence, max, min, map) {
+  if(violence == "Violent") {
+    crime.with.weather <- crime.with.weather %>% filter(Violent == TRUE)
+  } else if(violence == "Nonviolent") {
+    crime.with.weather <- crime.with.weather %>% filter(Violent == FALSE)
+  }
+  crime.with.weather <- crime.with.weather %>% filter(PRCP <= max & PRCP >= min)
+  length <- nrow(crime.with.weather)
+  if(length >= 200) {
+    points <- crime.with.weather[sample(length, 200), ]
+  } else {
+    points <- crime.with.weather
+  }
+  
+  p <- ggmap(map) +
+    geom_point(data = points, aes(x = long, y = lat))
+  return(p)
+}
 
 
 
@@ -65,28 +79,12 @@ my.server <- function(input, output) {
     violence <- violence()
     max.precip <- max.precip()
     min.precip <- min.precip()
+    map <- get_map("san francisco, california", zoom = 12)
     
     san.fran.crime <- left_join(san.fran.crime, sf.weather, by=c("Date" = "DATE")) %>% 
       distinct(ID, .keep_all = TRUE)
     
-    if(violence == "Violent") {
-      san.fran.crime <- filter(san.fran.crime, Violent == TRUE)
-    } else if (violence == "Nonviolent") {
-      san.fran.crime <- filter(san.fran.crime, Violent == FALSE)
-    }
-    
-    san.fran.crime <- filter(san.fran.crime, PRCP <= max.precip & PRCP >= min.precip)
-    length <- nrow(san.fran.crime)
-    
-    if(length >= 200) {
-      san.fran.points <- san.fran.crime[sample(length, 200), ]
-    } else {
-      san.fran.points <- san.fran.crime
-    }
-    
-    p <- ggmap(san.fran.map, extent = "panel") +
-      geom_point(data = san.fran.points, aes(x = long, y = lat))
-    return(p)
+    return(GetMap(san.fran.crime, violence, max.precip, min.precip, map))
     
   })
   
