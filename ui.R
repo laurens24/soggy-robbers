@@ -15,10 +15,29 @@ my.ui <- fluidPage(
       tabsetPanel( id = "tabpanel",
                    type = "tabs",
                    tabPanel("Home"),
-                   tabPanel("Boston", plotOutput("Boston.bar"), plotOutput("Boston.map")), 
-                   tabPanel("San Francisco", plotOutput("SF.bar"), plotOutput("SF.map")), 
-                   tabPanel("Los Angeles", plotOutput("LA.bar", click = 'bar.click'), plotOutput("LA.map")),
-                   tabPanel("Chicago", plotOutput("Chicago.bar"), plotOutput("Chicago.map"))
+                   tabPanel("Boston",
+                            tabsetPanel(
+                              tabPanel("Precipitation Chart", plotOutput("Boston.bar")),
+                              tabPanel("Crime Map", plotOutput("Boston.map"))
+                            )
+                   ), 
+                   tabPanel("San Francisco", 
+                            tabsetPanel(
+                              tabPanel("Precipitation Chart", plotOutput("SF.bar")),
+                              tabPanel("Crime Map", plotOutput("SF.map"))
+                            )
+                   ),
+                   tabPanel("Los Angeles",
+                            tabsetPanel(
+                              tabPanel("Precipitation Chart", plotOutput("LA.bar")),
+                              tabPanel("Crime Map", plotOutput("LA.map"))
+                            )
+                   ),
+                   tabPanel("Chicago",
+                            tabsetPanel(
+                              tabPanel("Precipitation Chart", plotOutput("Chicago.bar")),
+                              tabPanel("Crime Map", plotOutput("Chicago.map"))
+                            ))
       )
     )
   )
