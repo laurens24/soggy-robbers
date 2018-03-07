@@ -185,6 +185,24 @@ my.server <- function(input, output) {
     GetBar(la.crime, la.weather, max.precip(), min.precip(), violence())
   })
   
+  la2.crime <- read.csv("data/los_angeles_crime.csv", stringsAsFactors = FALSE)
+  la2.crime$lat <- sapply(la2.crime$Location, GetX)
+  la2.crime$long <- sapply(la2.crime$Location, GetY)
+  
+  output$LA.map <- renderPlot({
+    
+    violence <- violence()
+    max.precip <- max.precip()
+    min.precip <- min.precip()
+    
+    map <- get_map("los angeles, california", zoom = 12)
+    
+    la2.crime <- left_join(la2.crime, la.weather, by= c("Date"="DATE")) %>% 
+      distinct(ID, .keep_all = TRUE)
+    
+    return(GetMap(la2.crime, violence, max.precip, min.precip, map))
+    
+  })
   ############# CHICAGO ############
   
 }
