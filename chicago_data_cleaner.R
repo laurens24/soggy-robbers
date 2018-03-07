@@ -13,8 +13,7 @@ chicago.data <- read.csv('data/chicago_crime.csv',
                                                      "HOMICIDE"),
                        Date = as.Date(Date, "%m/%d/%Y")) %>%
                 # Remove the column used to calculate "Violent"
-                select(-Primary.Type)
-
-head(chicago.data)
+                select(-Primary.Type) %>%
+                filter(Date <= "2018-02-08")
 
 write.csv(chicago.data, "data/Chicago_Crime_Data.csv")
