@@ -3,32 +3,8 @@ library(ggplot2)
 library(dplyr)
 library(ggmap)
 
-<<<<<<< HEAD
-# Input: A pre-joined dataframe of crime and weather, and an optional min 
-#   and max
-# Output: A dataframe of the crimes that have a precipitation level greater
-#   than or equal to the given min (if one is given) and less than the given
-#   max (if one is given)
-makeBuckets <- function(data) {
-  splitwidth <- max(data$PRCP) / 5
 
-  data %>%
-    mutate(bucket = PRCP %/% splitwidth)
-}
-
-##### CHICAGO #####
-ch.crime.data <- read.csv("data/Chicago_Crime_Data.csv", 
-                          stringsAsFactors=FALSE)
-
-ch.crime.counted <- ch.crime.data %>%
-                    group_by(Date, Violent) %>%
-                    summarize(count = n())
-
-ch.wthr.data <- read.csv("data/chicago_weather.csv", 
-                            stringsAsFactors=FALSE)
-
-ch.crime.wthr <- ch.crime.counted %>%
-                 inner_join(ch.wthr.data, by=c("Date" = "DATE"))
+crime + weather, violence(), max(), min(), get_map("city")
 
 ### SERVER ###
 
@@ -78,14 +54,12 @@ colnames(weather) <- c("Station", "Name", "Date", "PRCP")
 
 combined.data <- left_join(crime, weather, by = "Date") %>% left_join(avg.violent, by = "Date") %>% left_join(avg.nonviolent, by = "Date") %>% left_join(avg.both, by = "Date")
 
-=======
 GetX <- function(coordinates) {
   vector.coordinates <- unlist(strsplit(coordinates, ","))
   x <- vector.coordinates[1]
   x <- substr(x, 2, nchar(x))
   return(as.numeric(x))
 }
->>>>>>> 77ccd84b4fe8f00d4c74a9cf273488e6a155aed4
 
 GetY <- function(coordinates) {
   vector.coordinates <- unlist(strsplit(coordinates, ","))
