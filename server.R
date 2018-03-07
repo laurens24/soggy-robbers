@@ -29,9 +29,6 @@ san.fran.crime <- mutate(san.fran.crime, short.lat = round(lat, 3), short.long =
 san.fran.plot.val <- select(san.fran.crime, short.lat, short.long) %>% 
   distinct(short.long, .keep_all = TRUE)
 
-ggmap(san.fran.map, extend = "panel") +
-  geom_point(data = san.fran.plot.val, aes(x = short.long, y = short.lat))
-
 sf.weather <- read.csv("data/othercities_weather.csv", stringsAsFactors = FALSE)
 sf.weather <- sf.weather %>% filter(STATION == "US1CASF0004")
 sf.weather <- sf.weather %>% mutate(as.date = as.Date(DATE))
@@ -48,7 +45,11 @@ my.server <- function(input, output) {
   })
   
   max.precip <- reactive ({
-    return (input$max.precip)
+    return (input$precip[2])
+  })
+  
+  min.precip <- reactive({
+    return (input$precip[1])
   })
   
   
@@ -57,15 +58,13 @@ my.server <- function(input, output) {
   
   ############## SAN FRAN ###############
   output$SF.bar <- renderPlot({
-    p <- ggplot(data = mtcars) +
-      geom_point(mapping = aes(x = mpg, y = cyl))
-    return(p)
   })
   
   output$SF.map <- renderPlot({
     
     violence <- violence()
     max.precip <- max.precip()
+    min.precip <- min.precip()
     
     san.fran.crime <- left_join(san.fran.crime, sf.weather, by=c("Date" = "DATE")) %>% 
       distinct(ID, .keep_all = TRUE)
@@ -76,7 +75,7 @@ my.server <- function(input, output) {
       san.fran.crime <- filter(san.fran.crime, Violent == FALSE)
     }
     
-    san.fran.crime <- filter(san.fran.crime, PRCP <= max.precip)
+    san.fran.crime <- filter(san.fran.crime, PRCP <= max.precip & PRCP >= min.precip)
     length <- nrow(san.fran.crime)
     
     if(length >= 200) {

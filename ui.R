@@ -7,8 +7,8 @@ my.ui <- fluidPage(
   titlePanel('Creative Title'),
   sidebarLayout(
     sidebarPanel(
-      sliderInput('max.precip', label = "Max amount of precipitation", 
-                  min = 0, max = 5, value = 5),
+      sliderInput('precip', label = "Max amount of precipitation", 
+                  min = 0, max = 5, value = c(0, 5)),
       radioButtons('violence', label = "Crimes Included", choices = c("Violent" = "Violent", 
                                                                       "Nonviolent" = "Nonviolent",
                                                                       "Both" = "Both"), 
