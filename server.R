@@ -3,6 +3,13 @@ library(ggplot2)
 library(dplyr)
 library(ggmap)
 
+la.crime <- read.csv("data/los_angeles_crime.csv", stringsAsFactors = FALSE)
+la.weather <- read.csv("data/LAsantamonica_weather.csv", stringsAsFactors = FALSE)
+la.weather <- filter(la.weather, !is.na(PRCP))
+
+la.avg.violent <- filter(la.crime, Violent == TRUE) %>% group_by(Date) %>% summarize(total = n())
+la.avg.violent <- la.avg.violent[c(1:770), ]
+
 GetX <- function(coordinates) {
   vector.coordinates <- unlist(strsplit(coordinates, ","))
   x <- vector.coordinates[1]
@@ -35,6 +42,72 @@ GetMap <- function(crime.with.weather, violence, max, min, map) {
   p <- ggmap(map) +
     geom_point(data = points, aes(x = long, y = lat))
   return(p)
+}
+
+GetBar <- function(crime, weather, max, min, violence) {
+  avg.violent <- filter(crime, Violent == TRUE) %>% group_by(Date) %>% summarize(Violent.total = n())
+  
+  avg.nonviolent <- filter(crime, Violent == FALSE) %>% group_by(Date) %>% summarize(Nonviolent.total = n())
+  
+  avg.both <- group_by(crime, Date) %>% summarize(Both.total = n())
+  
+  colnames(weather) <- c("Station", "Name", "Date", "PRCP")
+  
+  #combined.data <- left_join(crime, weather, by = "Date") %>% left_join(avg.violent, by = "Date") %>% left_join(avg.nonviolent, by = "Date") %>% left_join(avg.both, by = "Date")
+  
+  avg.value = "0"
+  if (violence == "Violent") {
+    avg.value <- "Violent.total" %>% rlang::sym()
+    data.in.question <- avg.violent
+  } else if (violence == "Nonviolent") {
+    avg.value <- "Nonviolent.total" %>% rlang::sym()
+    data.in.question <- avg.nonviolent
+  } else {
+    avg.value <- "Both.total" %>% rlang::sym()
+    data.in.question <- avg.both
+  }
+  
+  data.in.question <- left_join(data.in.question, weather, by = "Date")
+  
+  max.num <- max(data.in.question$PRCP, na.rm = TRUE)
+  break.point <- ((max - min) / 5)
+  first.point <- min + break.point
+  breaks <- seq(first.point, max, break.point)
+  # breaks <- c(first.point, first.point + break.point, first.point + break.point * 2, first.point + break.point * 3, max)
+  
+  determine.break <- function(prcp) {
+    point <- 0
+    
+    ifelse(prcp <= breaks[1], point <- paste0(min, " - ", breaks[1]), 
+           ifelse(prcp <= breaks[2], point <- paste0(breaks[1], " - ", breaks[2]),
+                  ifelse(prcp <= breaks[3], point <- paste0(breaks[2], " - ", breaks[3]),
+                         ifelse(prcp <= breaks[4], point <- paste0(breaks[3], " - ", breaks[4]),
+                                ifelse(prcp <= breaks[5], point <- paste0(breaks[4], " - ", breaks[5]), point <- 0)))))
+  }
+  
+  data.in.question <- data.in.question %>% mutate(points = determine.break(data.in.question$PRCP)) %>% filter(!is.na(points))
+  
+  crime.color <- "white"
+  if (violence == "Violent") {
+    crime.color <- "red"
+  } else if (violence == "Nonviolent") {
+    crime.color <- "blue"
+  } else {
+    crime.color <- "purple"
+  }
+  
+  
+  data.in.question <- data.in.question %>% select(PRCP, !!avg.value, points)
+  prcp.group <- group_by(data.in.question, points) %>% summarize(average = (sum(!!avg.value) / n()))
+  la.bar <- ggplot(prcp.group) +
+    geom_bar(mapping = aes(x = points, y = average), stat="identity", fill = crime.color) +
+    geom_text(aes(x = points, y = average, label=round(average, digits = 2), vjust=-0.25)) +
+    labs(title = paste0("Average Number of ", violence, " Crimes vs Precipitation Levels"),
+         x = "Precipitation", 
+         y = "Average number of crimes")
+  
+  
+  return(la.bar)
 }
 
 my.server <- function(input, output) {
@@ -82,87 +155,15 @@ my.server <- function(input, output) {
     return(GetMap(san.fran.crime, violence, max.precip, min.precip, map))
     
   })
-  
-  
+ 
   ############# LA #################
-  crime <- read.csv("data/los_angeles_crime.csv", stringsAsFactors = FALSE)
-  weather <- read.csv("data/LAsantamonica_weather.csv", stringsAsFactors = FALSE)
-  weather <- filter(weather, !is.na(PRCP))
-  
-  avg.violent <- filter(crime, Violent == TRUE) %>% group_by(Date) %>% summarize(total = n())
-  avg.violent <- avg.violent[c(1:770), ]
-  
-  avg.v.num <- sum(avg.violent$total) / nrow(avg.violent)
-  colnames(avg.violent) <- c("Date", "Violent.total")
-  
-  avg.nonviolent <- filter(crime, Violent == FALSE) %>% group_by(Date) %>% summarize(total = n())
-  avg.nonviolent <- avg.nonviolent[c(1:770), ]
-  
-  avg.nv.num <- sum(avg.nonviolent$total) / nrow(avg.nonviolent)
-  colnames(avg.nonviolent) <- c("Date", "Nonviolent.total")
-  
-  avg.both <- group_by(crime, Date) %>% summarize(total = n())
-  avg.both <- avg.both[c(1:770), ]
-  
-  avg.b.num <- sum(avg.both$total) / nrow(avg.both)
-  colnames(avg.both) <- c("Date", "Both.total")
-  
-  colnames(weather) <- c("Station", "Name", "Date", "PRCP")
-  
-  combined.data <- left_join(crime, weather, by = "Date") %>% left_join(avg.violent, by = "Date") %>% left_join(avg.nonviolent, by = "Date") %>% left_join(avg.both, by = "Date")
-  
-  
+  la.crime <- read.csv("data/los_angeles_crime.csv", stringsAsFactors = FALSE)
+  la.crime <- filter(la.crime, Date <= as.Date("02/08/2018", format="%m/%d/%Y"))
+  la.weather <- read.csv("data/LAsantamonica_weather.csv", stringsAsFactors = FALSE)
+  la.weather <- filter(la.weather, !is.na(PRCP))
   
   output$LA.bar <- renderPlot({
-    avg.value = "0"
-    if (violence() == "Violent") {
-      avg.value <- "Violent.total" %>% rlang::sym()
-    } else if (violence() == "Nonviolent") {
-      avg.value <- "Nonviolent.total" %>% rlang::sym()
-    } else {
-      avg.value <- "Both.total" %>% rlang::sym()
-    }
-    
-    max.num <- max(combined.data$PRCP, na.rm = TRUE)
-    break.point <- ((max.precip() - min.precip()) / 5)
-    first.point <- min.precip() + break.point
-    breaks <- c(first.point, first.point + break.point, first.point + break.point * 2, first.point + break.point * 3, max.precip())
-    
-    determine.break <- function(prcp) {
-      point <- 0
-      
-      ifelse(prcp <= breaks[1], point <- paste0(min.precip(), " - ", breaks[1]), 
-             ifelse(prcp <= breaks[2], point <- paste0(breaks[1], " - ", breaks[2]),
-                    ifelse(prcp <= breaks[3], point <- paste0(breaks[2], " - ", breaks[3]),
-                           ifelse(prcp <= breaks[4], point <- paste0(breaks[3], " - ", breaks[4]),
-                                  ifelse(prcp <= breaks[5], point <- paste0(breaks[4], " - ", breaks[5]), point <- 0)))))
-    }
-    
-    #combined.data <- combined.data %>% select(Violent, PRCP, !!avg.value)
-    combined.data <- combined.data %>% mutate(points = determine.break(combined.data$PRCP)) %>% filter(!is.na(points))
-    
-    crime.color <- "white"
-    if (violence() == "Violent") {
-      crime.color <- "red"
-    } else if (violence() == "Nonviolent") {
-      crime.color <- "blue"
-    } else {
-      crime.color <- "purple"
-    }
-    
-    
-    combined.data <- combined.data %>% select(Violent, PRCP, !!avg.value, points)
-    prcp.group <- group_by(combined.data, points) %>% summarize(average = (sum(!!avg.value) / n()))
-    la.bar <- ggplot(prcp.group) +
-      geom_bar(mapping = aes(x = points, y = average), stat="identity", fill = crime.color) +
-      geom_text(aes(x = points, y = average, label=round(average, digits = 2), vjust=-0.25)) +
-      labs(title = paste0("Average Number of ", violence(), " Crimes vs Precipitation Levels"),
-           x = "Precipitation", 
-           y = "Average number of crimes")
-    
-    
-    return(la.bar)
-    
+    GetBar(la.crime, la.weather, max.precip(), min.precip(), violence())
   })
   
   ############# CHICAGO ############
