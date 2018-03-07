@@ -3,13 +3,6 @@ library(ggplot2)
 library(dplyr)
 library(ggmap)
 
-la.crime <- read.csv("data/los_angeles_crime.csv", stringsAsFactors = FALSE)
-la.weather <- read.csv("data/LAsantamonica_weather.csv", stringsAsFactors = FALSE)
-la.weather <- filter(la.weather, !is.na(PRCP))
-
-la.avg.violent <- filter(la.crime, Violent == TRUE) %>% group_by(Date) %>% summarize(total = n())
-la.avg.violent <- la.avg.violent[c(1:770), ]
-
 GetX <- function(coordinates) {
   vector.coordinates <- unlist(strsplit(coordinates, ","))
   x <- vector.coordinates[1]
@@ -73,7 +66,7 @@ GetBar <- function(crime, weather, max, min, violence) {
   break.point <- ((max - min) / 5)
   first.point <- min + break.point
   breaks <- seq(first.point, max, break.point)
-  # breaks <- c(first.point, first.point + break.point, first.point + break.point * 2, first.point + break.point * 3, max)
+  #breaks <- c(first.point, first.point + break.point, first.point + break.point * 2, first.point + break.point * 3, max)
   
   determine.break <- function(prcp) {
     point <- 0
@@ -158,21 +151,18 @@ my.server <- function(input, output) {
   san.fran.crime$long <- sapply(san.fran.crime$Location, GetY)
   
   sf.weather <- all.weather %>% filter(STATION == "US1CASF0004")
-  sf.weather <- sf.weather %>% mutate(as.date = as.Date(DATE))
+  sf.crime.with.weather <- left_join(san.fran.crime, sf.weather, by=c("Date" = "DATE")) %>% 
+    distinct(ID, .keep_all = TRUE)
+  sf.weather <- sf.weather[, 1:4]
+  sf.weather <- sf.weather %>% filter(!is.na(PRCP))
+  
+  output$SF.bar <- renderPlot({
+    return(GetBar(san.fran.crime, sf.weather, max.precip(), min.precip(), violence()))
+  })
   
   output$SF.map <- renderPlot({
-    
-    violence <- violence()
-    max.precip <- max.precip()
-    min.precip <- min.precip()
-    
     map <- get_map("san francisco, california", zoom = 12)
-    
-    san.fran.crime <- left_join(san.fran.crime, sf.weather, by=c("Date" = "DATE")) %>% 
-      distinct(ID, .keep_all = TRUE)
-    
-    return(GetMap(san.fran.crime, violence, max.precip, min.precip, map))
-    
+    return(GetMap(sf.crime.with.weather, violence(), max.precip(), min.precip(), map))
   })
  
   ############# LA #################
