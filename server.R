@@ -194,5 +194,26 @@ my.server <- function(input, output) {
 
 
   ############# CHICAGO ############
-  
+  ch.crime <- read.csv("data/Chicago_Crime_Data.csv", stringsAsFactors = FALSE)
+  ch.crime$lat <- sapply(ch.crime$Location, GetX)
+  ch.crime$long <- sapply(ch.crime$Location, GetY)
+
+  ch.weather <- all.weather %>% 
+                filter(NAME == "CHICAGO 4.7 NE, IL US") %>%
+                mutate(as.date = as.Date(DATE))
+
+  output$Chicago.map <- renderPlot({
+    
+    violence <- violence()
+    max.precip <- max.precip()
+    min.precip <- min.precip()
+    
+    map <- get_map("chicago, illinois", zoom = 11)
+    
+    ch.crime <- left_join(ch.crime, ch.weather, by=c("Date" = "DATE")) %>% 
+      distinct(ID, .keep_all = TRUE)
+    
+    return(GetMap(ch.crime, violence, max.precip, min.precip, map))
+    
+  })
 }
