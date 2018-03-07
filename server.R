@@ -66,7 +66,7 @@ GetBar <- function(crime, weather, max, min, violence) {
   break.point <- ((max - min) / 5)
   first.point <- min + break.point
   breaks <- seq(first.point, max, break.point)
-  # breaks <- c(first.point, first.point + break.point, first.point + break.point * 2, first.point + break.point * 3, max)
+  #breaks <- c(first.point, first.point + break.point, first.point + break.point * 2, first.point + break.point * 3, max)
   
   determine.break <- function(prcp) {
     point <- 0
