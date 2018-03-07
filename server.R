@@ -2,6 +2,7 @@ library(shiny)
 library(ggplot2)
 library(dplyr)
 library(ggmap)
+library(leaflet)
 
 GetX <- function(coordinates) {
   vector.coordinates <- unlist(strsplit(coordinates, ","))
@@ -17,8 +18,8 @@ GetY <- function(coordinates) {
   return(as.numeric(y))
 }
 
-# Returns the map 
-GetMap <- function(crime.with.weather, violence, max, min, map) {
+# Returns the leaflet map
+GetMap <- function(crime.with.weather, violence, max, min, longitude, latitude) {
   if(violence == "Violent") {
     crime.with.weather <- crime.with.weather %>% filter(Violent == TRUE)
   } else if(violence == "Nonviolent") {
@@ -32,8 +33,8 @@ GetMap <- function(crime.with.weather, violence, max, min, map) {
     points <- crime.with.weather
   }
   
-  p <- ggmap(map) +
-    geom_point(data = points, aes(x = long, y = lat))
+  p <- leaflet() %>% addProviderTiles(providers$OpenStreetMap.HOT) %>% setView(longitude, latitude, zoom = 12) %>% 
+    addCircleMarkers(data = points, lng = ~ long, lat = ~ lat, radius = 1)
   return(p)
 }
 
@@ -45,8 +46,6 @@ GetBar <- function(crime, weather, max, min, violence) {
   avg.both <- group_by(crime, Date) %>% summarize(Both.total = n())
   
   colnames(weather) <- c("Station", "Name", "Date", "PRCP")
-  
-  #combined.data <- left_join(crime, weather, by = "Date") %>% left_join(avg.violent, by = "Date") %>% left_join(avg.nonviolent, by = "Date") %>% left_join(avg.both, by = "Date")
   
   avg.value = "0"
   if (violence == "Violent") {
@@ -159,9 +158,8 @@ my.server <- function(input, output) {
     return(GetBar(san.fran.crime, sf.weather, max.precip(), min.precip(), violence()))
   })
   
-  output$SF.map <- renderPlot({
-    map <- get_map("san francisco, california", zoom = 12)
-    return(GetMap(sf.crime.with.weather, violence(), max.precip(), min.precip(), map))
+  output$SF.map <- renderLeaflet({
+    return(GetMap(sf.crime.with.weather, violence(), max.precip(), min.precip(), -122.42, 37.78))
   })
  
   ############# LA #################
@@ -178,18 +176,16 @@ my.server <- function(input, output) {
   la2.crime$lat <- sapply(la2.crime$Location, GetX)
   la2.crime$long <- sapply(la2.crime$Location, GetY)
   
-  output$LA.map <- renderPlot({
+  output$LA.map <- renderLeaflet({
     
     violence <- violence()
     max.precip <- max.precip()
     min.precip <- min.precip()
     
-    map <- get_map("los angeles, california", zoom = 12)
-    
     la2.crime <- left_join(la2.crime, la.weather, by= c("Date"="DATE")) %>% 
       distinct(ID, .keep_all = TRUE)
     
-    return(GetMap(la2.crime, violence, max.precip, min.precip, map))
+    return(GetMap(la2.crime, violence, max.precip, min.precip, -118.2437, 34.0522))
     
   })
 
@@ -207,18 +203,16 @@ my.server <- function(input, output) {
     return(GetBar(ch.crime, ch.weather, max.precip(), min.precip(), violence()))
   })
 
-  output$Chicago.map <- renderPlot({
+  output$Chicago.map <- renderLeaflet({
     
     violence <- violence()
     max.precip <- max.precip()
     min.precip <- min.precip()
     
-    map <- get_map("chicago, illinois", zoom = 11)
-    
     ch.crime <- left_join(ch.crime, ch.weather, by=c("Date" = "DATE")) %>% 
       distinct(ID, .keep_all = TRUE)
     
-    return(GetMap(ch.crime, violence, max.precip, min.precip, map))
+    return(GetMap(ch.crime, violence, max.precip, min.precip, -87.6298, 41.8781))
     
   })
 }

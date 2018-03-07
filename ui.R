@@ -1,6 +1,9 @@
 library('shiny')
+library('shinythemes')
+library('leaflet')
 
 my.ui <- fluidPage(
+  theme = shinytheme("sandstone"),
   titlePanel('Creative Title'),
   sidebarLayout(
     sidebarPanel(
@@ -24,13 +27,13 @@ my.ui <- fluidPage(
                    tabPanel("Boston",
                             tabsetPanel(
                               tabPanel("Precipitation Chart", plotOutput("Boston.bar")),
-                              tabPanel("Crime Map", plotOutput("Boston.map"))
+                              tabPanel("Crime Map", leafletOutput("Boston.map"))
                             )
                    ), 
                    tabPanel("San Francisco", 
                             tabsetPanel(
                               tabPanel("Precipitation Chart", plotOutput("SF.bar")),
-                              tabPanel("Crime Map", plotOutput("SF.map"))
+                              tabPanel("Crime Map", leafletOutput("SF.map"))
                             )
                    ),
                    tabPanel("Los Angeles",
@@ -46,14 +49,14 @@ my.ui <- fluidPage(
                                          lowest for the precipitation range of 0.9 to 1.2 for all crime types. The highest range of recipitation had the highest
                                          average number of violent crimes. Los Angeles' overall average number of crime is 616.41 which is lower than the average
                                          for the precipation range of 1.2 - 1.5 and very close to the range of 0 - 0.3.")),
-                              tabPanel("Crime Map", plotOutput("LA.map"),
+                              tabPanel("Crime Map", leafletOutput("LA.map"),
                                        p("The map of Los Angeles above shows locations of 200 randomly selected crimes."))
                             )
                    ),
                    tabPanel("Chicago",
                             tabsetPanel(
                               tabPanel("Precipitation Chart", plotOutput("Chicago.bar")),
-                              tabPanel("Crime Map", plotOutput("Chicago.map"))
+                              tabPanel("Crime Map", leafletOutput("Chicago.map"))
                             ))
       )
     )
