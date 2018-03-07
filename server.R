@@ -199,8 +199,13 @@ my.server <- function(input, output) {
   ch.crime$long <- sapply(ch.crime$Location, GetY)
 
   ch.weather <- all.weather %>% 
-                filter(NAME == "CHICAGO 4.7 NE, IL US") %>%
-                mutate(as.date = as.Date(DATE))
+                filter(NAME == "CHICAGO 4.7 NE, IL US")
+  
+  ch.weather <- ch.weather[, 1:4]
+  
+  output$Chicago.bar <- renderPlot({
+    return(GetBar(ch.crime, ch.weather, max.precip(), min.precip(), violence()))
+  })
 
   output$Chicago.map <- renderPlot({
     
