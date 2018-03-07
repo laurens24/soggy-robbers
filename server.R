@@ -51,18 +51,21 @@ my.server <- function(input, output) {
     return (input$precip[1])
   })
   
+  all.weather <- read.csv("data/othercities_weather.csv", stringsAsFactors = FALSE)
+  
   
   
   ############### BOSTON #################
   
+  
   ############## SAN FRAN ###############
   # SF Data Manipulation
+  
   san.fran.crime <- read.csv("data/san_francisco_crime.csv", stringsAsFactors = FALSE)
   san.fran.crime$lat <- sapply(san.fran.crime$Location, GetX)
   san.fran.crime$long <- sapply(san.fran.crime$Location, GetY)
   
-  sf.weather <- read.csv("data/othercities_weather.csv", stringsAsFactors = FALSE)
-  sf.weather <- sf.weather %>% filter(STATION == "US1CASF0004")
+  sf.weather <- all.weather %>% filter(STATION == "US1CASF0004")
   sf.weather <- sf.weather %>% mutate(as.date = as.Date(DATE))
   
   output$SF.map <- renderPlot({
