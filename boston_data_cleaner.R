@@ -29,6 +29,6 @@ colnames(boston.data)[colnames(boston.data) == "Datetype"] <- "Date"
 
 boston.data <- filter(boston.data, Date <= as.Date("02/08/2018", "%m/%d/%Y"))
 
-boston.data <- select(boston.data, ID, Date, Location, Violent)
+boston.data <- select(boston.data, Date, Location, Violent, OFFENCE_CODE_GROUP)
 
-write.csv(boston.data, "data/Boston_Crime_Data.csv")
+write_feather(boston.data, "data/Boston_Crime.feather")

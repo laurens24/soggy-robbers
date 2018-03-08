@@ -1,7 +1,3 @@
-library('shiny')
-library('shinythemes')
-library('leaflet')
-
 my.ui <- fluidPage(
   theme = shinytheme("sandstone"),
   titlePanel('Creative Title'),
@@ -56,7 +52,10 @@ my.ui <- fluidPage(
                    tabPanel("Chicago",
                             tabsetPanel(
                               tabPanel("Precipitation Chart", plotOutput("Chicago.bar")),
-                              tabPanel("Crime Map", leafletOutput("Chicago.map"))
+                              tabPanel("Crime Map",
+                                       leafletOutput("Chicago.map"),
+                                       p("Here is a random sampling of the crimes from this area."), 
+                                       p("Of the 566,783 total crimes between January 1st, 2016 and February 8th, 2018 only 200 are being displayed."))
                             ))
       )
     )
