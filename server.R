@@ -147,7 +147,7 @@ my.server <- function(input, output) {
   
   boston.weather <- all.weather %>% filter(STATION == "US1MASF0001")
   boston.crime.with.weather <- left_join(boston.crime, boston.weather, by=c("Date" = "DATE")) %>% 
-    distinct(ID, .keep_all = TRUE)
+    distinct(X, .keep_all = TRUE)
   boston.weather <- boston.weather[, 1:4]
   boston.weather <- boston.weather %>% filter(!is.na(PRCP))
   
