@@ -11,15 +11,16 @@ boston.data[boston.data$OFFENSE_DESCRIPTION == "THREATS TO DO BODILY HARM", "OFF
 boston.data <- mutate(boston.data, Violent = SHOOTING == 'Y')
 
 boston.data$Violent = boston.data$OFFENSE_CODE_GROUP == "Threats to do bodily harm" | 
-  boston.data$OFFENSE_CODE_GROUP == "Aggravated Assault" | boston.data$OFFENSE_CODE_GROUP == "Arson" |
+  boston.data$OFFENSE_CODE_GROUP == "Aggravated Assault" | 
+  boston.data$OFFENSE_CODE_GROUP == "Arson" |
   boston.data$OFFENSE_CODE_GROUP == "Residential Burglary" | 
-  boston.data$OFFENSE_CODE_GROUP == "HOME INVASION"|  boston.data$OFFENSE_CODE_GROUP ==  "Simple Assault"| 
-  boston.data$OFFENSE_CODE_GROUP == "Ballistics" | boston.data$OFFENSE_CODE_GROUP == "Vandalism"|
-  boston.data$OFFENSE_CODE_GROUP == "Firearm Violations" | boston.data$OFFENSE_CODE_GROUP == "Restraining Order Violations" |
+  boston.data$OFFENSE_CODE_GROUP == "Simple Assault"| 
+  boston.data$OFFENSE_CODE_GROUP == "Ballistics" | 
   boston.data$OFFENSE_CODE_GROUP == "Offenses Against Child / Family" |
-  boston.data$OFFENSE_CODE_GROUP == "Criminal Harassment" | boston.data$OFFENSE_CODE_GROUP == "Bomb Hoax" | 
-  boston.data$OFFENSE_CODE_GROUP == "Biological Threat" | boston.data$OFFENSE_CODE_GROUP == "Explosives"| 
-  boston.data$OFFENSE_CODE_GROUP == "Homicide"| boston.data$OFFENSE_CODE_GROUP == "Burglary - No Property Taken"
+  boston.data$OFFENSE_CODE_GROUP == "Criminal Harassment" | 
+  boston.data$OFFENSE_CODE_GROUP == "Bomb Hoax" | 
+  boston.data$OFFENSE_CODE_GROUP == "Homicide"| 
+  boston.data$OFFENSE_CODE_GROUP == "Burglary - No Property Taken"
   
 colnames(boston.data)[colnames(boston.data) == "OFFENSE_CODE_GROUP"] <- "Short.Description"
 

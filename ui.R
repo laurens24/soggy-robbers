@@ -81,7 +81,17 @@ my.ui <- navbarPage("Put Title Here",
              mainPanel(
                tabsetPanel(
                  tabPanel("Precipitation Chart",
-                          plotOutput("LA.bar")),
+                          plotOutput("LA.bar"),
+                          p("The bar chart above shows the average number of crimes corresponding to each range of precipitation
+                                         levels. The user can choose the crime type and the range of precipitation from the sidebar. It should be noted that
+                                         Los Angeles had 0 precipitation for 90% of the data gathered from January 1st, 2016 to February 8th, 2018.
+                                         Since only 10% of the data corresponded to precipitation levels above 0, the results may not be the most accurate
+                                         and cannot be used to imply causation"),
+                          p(h3("Correlation between precipitation levels and crime activity :")),
+                          p("For Los Angeles, no correlation was found between precipitation and crime. The average number of crimes was the
+                                         lowest for the precipitation range of 0.9 to 1.2 for all crime types. The highest range of recipitation had the highest
+                                         average number of violent crimes. Los Angeles' overall average number of crime is 616.41 which is lower than the average
+                                         for the precipation range of 1.2 - 1.5 and very close to the range of 0 - 0.3.")),
                  tabPanel("Crime Map", leafletOutput("LA.map"))
                )
              )
