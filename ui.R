@@ -19,6 +19,11 @@ my.ui <- fluidPage(
                    type = "tabs",
                    tabPanel("Home", 
                             p(h3("About Our Project")),
+                            p("Soggy Robbers provides users with the proper data to analyze trends and correlations between crime and
+                              precipitation in 4 cities - Boston, San Francisco, Los Angeles and Chicago."),
+                            p("Questions we tried to answer through our data analysis :"),
+                            p("1. Is there a correlation between precipitation levels and crime activity in Boston, San Francisco, Los Angeles and Chicago?"),
+                            p("2. Is there a trend that emerges when looking at only violent or non-violent crimes?"),
                             p(h3("Datasets")),
                             p("All datasets used for analysis can be accessed here :"),
                             p(a("Weather datasets", href = 'https://www.climate.gov/maps-data/dataset/daily-temperature-and-precipitation-reports-data-tables')),
