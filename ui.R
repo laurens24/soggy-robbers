@@ -122,7 +122,7 @@ my.ui <- navbarPage("Put Title Here",
   tabPanel("Conclusion",
            mainPanel(
              h1("Cross-City Analysis"),
-             tags$br(),
+             tags$hr(),
              h3("Precipitation and Crime"),
              p("Looking at average crime levels in each city showed that there is not significant
                variation in crime levels when precipitation occurs. The variation in average crime activity 
@@ -142,7 +142,17 @@ my.ui <- navbarPage("Put Title Here",
                Chicago and Los Angeles show variation that is more similar to the low values of Boston and
                San Francisco. Thus, we can conclude that precipitation levels do not have a significant impact
                on crime levels."),
-             h3("Violence vs. Nonviolence")
+             h3("Violence vs. Nonviolence"),
+             p("When we compared average number of violent and nonviolent crimes for varying precipitation levels,
+               the resulting bar graphs showed similar trends, if not the exact same trends. This led us to conclude
+               that precipitation did not have a significant effect on whether violent or nonviolent crimes occurred.
+               However, we could conclude that Chicago and Los Angeles exhibited the highest number of crimes,
+               both violent and non-violent, with Chicago winning gold."),
+             h1("Overall Conclusion"),
+             tags$hr(),
+             p("Our results did not show any significant change in violent and nonviolent crimes for varying precipitation
+               levels. Based on these conclusions, we urge individuals to be safe in all weather, not just sunny weather."),
+             p("Thanks for visiting our project!")
            ))
 )
 
