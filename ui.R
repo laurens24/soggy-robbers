@@ -12,7 +12,7 @@ my.ui <- navbarPage("Soggy Robbers",     #page title
                      tags$img(src='friends_umbrella.gif', width = 412, height = 232, 
                               style="display: block; margin-left: 100px; margin-right: 100px;"), 
                      p(h3("About Our Project")),
-                     p("Soggy Robbers provide users with the proper data to analyze trends and correlations between crime and
+                     p("Soggy Robbers provide users with the proper data gathered from January 1st, 2016 to February 8th, 2018 to analyze trends and correlations between crime and
                        precipitation in 4 cities - Boston, San Francisco, Los Angeles and Chicago."), tags$br(),
                      p(h4("Questions we tried to answer through our data analysis :")),
                      p("1. Is there a correlation between precipitation levels and crime activity in Boston, San Francisco, Los Angeles and Chicago?"),
@@ -65,8 +65,7 @@ my.ui <- navbarPage("Soggy Robbers",     #page title
                           p("There does not appear to be significant differences in different precipitation levels and average crime
                             activity in Boston. Average levels of precipitation are fairly stable across all crime types and
                             precipitation levels, and the range of crime both violent and nonviolent crime activity is 26.2 crimes, which
-                            is not significant."),
-                          p(h4(strong("Trends among violent or non-violent crimes :")))
+                            is not significant.")
                     ),
                  
                  #adds an interactive map that allows users to click on the map for more info 
@@ -104,8 +103,7 @@ my.ui <- navbarPage("Soggy Robbers",     #page title
                           p("There does not appear to be significant differences in different precipitation levels and average crime
                             activity in San Francisco. Average levels of precipitation are fairly stable across all crime types and
                             precipitation levels, and the range of crime both violent and nonviolent crime activity is 89.5 crimes, which
-                            is not significant."),
-                          p(h4(strong("Trends among violent or non-violent crimes")))
+                            is not significant.")
                           ),
                  tabPanel("Crime Map", leafletOutput("SF.map"),
                           #adds an explanation of the map 
@@ -145,14 +143,11 @@ my.ui <- navbarPage("Soggy Robbers",     #page title
                           p(h4(strong("Correlation between precipitation levels and crime activity in Los Angeles:"))),
 
                           p("For Los Angeles, no correlation was found between precipitation and crime. The average number of crimes was the
-                                         lowest for the precipitation range of 0.9 to 1.2 for all crime types. The highest range of recipitation had the highest
-                                         average number of violent crimes. Los Angeles' overall average number of crime is 616.41 which is lower than the average
-                                         for the precipation range of 1.2 - 1.5 and very close to the range of 0 - 0.3."),
-                          p(h4(strong("Trends among violent or non-violent crimes :"))),
-                          p("There were no clear trends among violent or non-violent crimes. The highest range of precipitation had the highest number of 
-                            crimes for both violent and non-violent crimes. For violent crimes with the max set at 1.23, the average number of crimes seems to decrease as the level of 
-                            precipitation increases. However, this seems to be the case only when the max is set at 1.23 or higher. For non-violent crimes, no clear trend 
-                            was found.")),
+                             lowest for the precipitation range of 0.9 to 1.2 for all crime types. The highest range of recipitation had the highest
+                             average number of violent crimes. Los Angeles' overall average number of crime is 616.41 which is lower than the average
+                             for the precipation range of 1.2 - 1.5 and very close to the range of 0 - 0.3. For violent crimes with the max set at 1.23, 
+                             the average number of crimes seems to decrease as the level of precipitation increases. However, this seems to be the case 
+                             only when the max is set at 1.23 or higher. For non-violent crimes, no clear trend was found.")),
                  tabPanel("Crime Map", leafletOutput("LA.map"),
                           #adds a short description of the map 
                           p("The map of Los Angeles above shows locations of 200 randomly selected crimes. Click on dots to find out more information about the specific crimes."))
@@ -190,8 +185,7 @@ my.ui <- navbarPage("Soggy Robbers",     #page title
                             activity in Chicago, but this is mostly due to the outlier above 4 inches of precipitation. 
                             Without the outlier, average levels of precipitation are fairly stable across all crime types and
                             precipitation levels. The range of crimes with the outlier is 172.5 crimes, but it is much lower without
-                            this observation."),
-                          p(h4(strong("Trends among violent or non-violent crimes :")))
+                            this observation.")
                           ),
                  tabPanel("Crime Map", leafletOutput("Chicago.map"),
                           #adds a short explanation of the map 
