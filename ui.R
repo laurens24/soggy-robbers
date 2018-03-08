@@ -185,7 +185,9 @@ my.ui <- navbarPage("Put Title Here",
                the resulting bar graphs showed similar trends, if not the exact same trends. This led us to conclude
                that precipitation did not have a significant effect on whether violent or nonviolent crimes occurred.
                However, we could conclude that Chicago and Los Angeles exhibited the highest number of crimes,
-               both violent and non-violent, with Chicago winning gold."),
+               both violent and non-violent, with Chicago winning gold. It should be noted that this can be attributed
+               to populations of each city. Boston's population 670,000 people and San Francisco's is 860,000 people, whereas
+               Chicago's is 2.7 million people, and Los Angeles's is 3.9 million people."),
              h1("Overall Conclusion"),
              tags$hr(),
              p("Our results did not show any significant change in violent and nonviolent crimes for varying precipitation
