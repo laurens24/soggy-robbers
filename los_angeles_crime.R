@@ -10,7 +10,8 @@ clean.la.crime <- select(la.crime, DR.Number, Date.Occurred, Crime.Code.Descript
                   mutate(Date = as.Date(Date.Occurred, "%m/%d/%Y")) %>%
                   filter(grepl("2016", Date.Occurred) | grepl("2017", Date.Occurred) | grepl("2018", Date.Occurred)) %>%
                   filter((DR.Number != 171013348) & (DR.Number != 171013326)) %>%
-                  select(DR.Number, Date, Location, Violent) 
-colnames(clean.la.crime) <- c("ID", "Date", "Location", "Violent")
+                  select(Crime.Code.Description, Date, Location, Violent) 
+
+colnames(clean.la.crime) <- c("Short.Description", "Date", "Location", "Violent")
 
 write.csv(clean.la.crime, "data/los_angeles_crime.csv")
