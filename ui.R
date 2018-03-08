@@ -39,6 +39,10 @@ my.ui <- navbarPage("Put Title Here",
                           plotOutput("Boston.bar"),
                           p("The bar chart above shows the average number of crimes corresponding to each range of precipitation
                             levels (in inches). The user can choose the crime type and the range of precipitation from the sidebar."),
+                          p("In 2007, the state of Massachusetts passed legislation protecting the confidentiality of victims of 
+                            rape and sexual assault, so none of the data relating to crimes in this category have been made available 
+                            to the public. Therefore, the violent crimes for Boston may be skewed because the data is missing an 
+                            entire category that is encompassed within the FBI definition of violent crimes."),
                           h3("Correlation between precipitation levels and crime activity in Boston:"),
                           p("There does not appear to be significant differences in different precipitation levels and average crime
                             activity in Boston. Average levels of precipitation are fairly stable across all crime types and
