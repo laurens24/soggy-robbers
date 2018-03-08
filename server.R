@@ -34,7 +34,7 @@ GetMap <- function(crime.with.weather, violence, max, min, longitude, latitude) 
   }
   
   p <- leaflet() %>% addProviderTiles(providers$OpenStreetMap.HOT) %>% setView(longitude, latitude, zoom = 12) %>% 
-    addCircleMarkers(data = points, lng = ~ long, lat = ~ lat, radius = 1.5, popup = ~ Short.Description)
+    addCircleMarkers(data = points, lng = ~ long, lat = ~ lat, radius = 2, popup = ~ Short.Description)
   return(p)
 }
 
@@ -105,15 +105,18 @@ GetBar <- function(crime, weather, max, min, violence) {
 my.server <- function(input, output) {
   
   violence <- reactive ({
-    return (input$violence)
+    violence <- c(input$violence.b, input$violence.sf, input$violence.la, input$violence.c)
+    return (violence)
   })
   
   max.precip <- reactive ({
-    return (input$precip[2])
+    precip <- c(input$precip.b[2], input$precip.sf[2], input$precip.la[2], input$precip.c[2])
+    return (precip)
   })
   
   min.precip <- reactive({
-    return (input$precip[1])
+    precip <- c(input$precip.b[1], input$precip.sf[1], input$precip.la[1], input$precip.c[1])
+    return (precip)
   })
   
   slider.max <- reactive({
@@ -152,11 +155,11 @@ my.server <- function(input, output) {
   boston.weather <- boston.weather %>% filter(!is.na(PRCP))
   
   output$Boston.bar <- renderPlot({
-    return(GetBar(boston.crime, boston.weather, max.precip(), min.precip(), violence()))
+    return(GetBar(boston.crime, boston.weather, max.precip()[1], min.precip()[1], violence()[1]))
   })
   
   output$Boston.map <- renderLeaflet({
-    return(GetMap(boston.crime.with.weather, violence(), max.precip(), min.precip(), -71.06, 42.36))
+    return(GetMap(boston.crime.with.weather, violence()[1], max.precip()[1], min.precip()[1], -71.06, 42.36))
   })
   
   ############## SAN FRAN ###############
@@ -173,11 +176,11 @@ my.server <- function(input, output) {
   sf.weather <- sf.weather %>% filter(!is.na(PRCP))
   
   output$SF.bar <- renderPlot({
-    return(GetBar(san.fran.crime, sf.weather, max.precip(), min.precip(), violence()))
+    return(GetBar(san.fran.crime, sf.weather, max.precip()[2], min.precip()[2], violence()[2]))
   })
   
   output$SF.map <- renderLeaflet({
-    return(GetMap(sf.crime.with.weather, violence(), max.precip(), min.precip(), -122.42, 37.78))
+    return(GetMap(sf.crime.with.weather, violence()[2], max.precip()[2], min.precip()[2], -122.42, 37.78))
   })
  
   ############# LA #################
@@ -187,7 +190,7 @@ my.server <- function(input, output) {
   la.weather <- filter(la.weather, !is.na(PRCP))
   
   output$LA.bar <- renderPlot({
-    GetBar(la.crime, la.weather, max.precip(), min.precip(), violence())
+    GetBar(la.crime, la.weather, max.precip()[3], min.precip()[3], violence()[3])
   })
   
   la2.crime <- read.csv("data/los_angeles_crime.csv", stringsAsFactors = FALSE)
@@ -196,14 +199,10 @@ my.server <- function(input, output) {
   
   output$LA.map <- renderLeaflet({
     
-    violence <- violence()
-    max.precip <- max.precip()
-    min.precip <- min.precip()
-    
     la2.crime <- left_join(la2.crime, la.weather, by= c("Date"="DATE")) %>% 
       distinct(ID, .keep_all = TRUE)
     
-    return(GetMap(la2.crime, violence, max.precip, min.precip, -118.2437, 34.0522))
+    return(GetMap(la2.crime, violence()[3], max.precip()[3], min.precip()[3], -118.2437, 34.0522))
     
   })
 
@@ -218,19 +217,15 @@ my.server <- function(input, output) {
   ch.weather <- ch.weather[, 1:4]
   
   output$Chicago.bar <- renderPlot({
-    return(GetBar(ch.crime, ch.weather, max.precip(), min.precip(), violence()))
+    return(GetBar(ch.crime, ch.weather, max.precip()[4], min.precip()[4], violence()[4]))
   })
 
   output$Chicago.map <- renderLeaflet({
     
-    violence <- violence()
-    max.precip <- max.precip()
-    min.precip <- min.precip()
-    
     ch.crime <- left_join(ch.crime, ch.weather, by=c("Date" = "DATE")) %>% 
       distinct(ID, .keep_all = TRUE)
     
-    return(GetMap(ch.crime, violence, max.precip, min.precip, -87.6298, 41.8781))
+    return(GetMap(ch.crime, violence()[4], max.precip()[4], min.precip()[4], -87.6298, 41.8781))
     
   })
 }
