@@ -48,9 +48,9 @@ my.ui <- navbarPage("Put Title Here",
                sliderInput(
                  "precip.sf",
                  label = "Min/Max amount of precipitation",
-                 value = c(0, 4),
+                 value = c(0, 4.1),
                  min = 0,
-                 max = 4
+                 max = 4.1
                ),
                radioButtons('violence.sf', label = "Crimes Included", choices = c("Violent" = "Violent", 
                                                                                "Nonviolent" = "Nonviolent", 
@@ -103,9 +103,9 @@ my.ui <- navbarPage("Put Title Here",
                sliderInput(
                  "precip.c",
                  label = "Min/Max amount of precipitation",
-                 value = c(0, 5),
+                 value = c(0, 5.1),
                  min = 0,
-                 max = 5
+                 max = 5.1
                ),
                radioButtons('violence.c', label = "Crimes Included", choices = c("Violent" = "Violent", 
                                                                                "Nonviolent" = "Nonviolent", 
