@@ -117,6 +117,10 @@ my.ui <- navbarPage("Put Title Here",
                  tabPanel("Crime Map", leafletOutput("Chicago.map"))
                )
              )
+           )),
+  tabPanel("Conclusion",
+           mainPanel(
+             p("no correlation lol")
            ))
 )
 
