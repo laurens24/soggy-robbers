@@ -10,7 +10,7 @@ my.ui <- navbarPage("Soggy Robbers",     #page title
            mainPanel(p(h3("Soggy Robbers")),
                      p("Stephen Moxley, Kara Lee, Lauren Smith and Michael Hart"), tags$br(),
                      p(h3("About Our Project")),
-                     p("Soggy Robbers provide users with the proper data to analyze trends and correlations between crime and
+                     p("Soggy Robbers provide users with the proper data gathered from January 1st, 2016 to February 8th, 2018 to analyze trends and correlations between crime and
                        precipitation in 4 cities - Boston, San Francisco, Los Angeles and Chicago."), tags$br(),
                      p(h4("Questions we tried to answer through our data analysis :")),
                      p("1. Is there a correlation between precipitation levels and crime activity in Boston, San Francisco, Los Angeles and Chicago?"),
