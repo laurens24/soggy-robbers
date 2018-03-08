@@ -118,27 +118,6 @@ my.server <- function(input, output) {
     precip <- c(input$precip.b[1], input$precip.sf[1], input$precip.la[1], input$precip.c[1])
     return (precip)
   })
-  
-  slider.max <- reactive({
-    switch(input$tabpanel,
-           "Home" = 1.5,
-           "Boston" = 1.5,
-           "San Francisco" = 4,
-           "Los Angeles" = 1.5,
-           "Chicago" = 5
-    )
-  })
-  
-  output$slider <- renderUI({
-    sliderInput(
-      "precip",
-      label = "Min/Max amount of precipitation",
-      value = c(0, slider.max()),
-      min = 0,
-      max = slider.max()
-    )
-  })  
-
 
   all.weather <- read.csv("data/othercities_weather.csv", stringsAsFactors = FALSE)
     
