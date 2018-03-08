@@ -14,4 +14,6 @@ chicago.data <- read.csv('data/chicago_crime.csv',
                        Date = as.Date(Date, "%m/%d/%Y")) %>%
                 filter(Date <= "2018-02-08")
 
+colnames(chicago.data)[colnames(chicago.data) == "Primary.Type"] <- "Short.Description"
+
 write.csv(chicago.data, "data/Chicago_Crime_Data.csv")
