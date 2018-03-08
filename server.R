@@ -37,6 +37,24 @@ my.server <- function(input, output) {
     
   ############### BOSTON #################
   
+  boston.crime <- read.csv("data/Boston_Crime_Data.csv", stringsAsFactors = FALSE)
+  boston.crime$lat <- sapply(boston.crime$Location, GetX)
+  boston.crime$long <- sapply(boston.crime$Location, GetY)
+  
+  boston.weather <- all.weather %>% filter(STATION == "US1MASF0001")
+  boston.crime.with.weather <- left_join(boston.crime, boston.weather, by=c("Date" = "DATE")) %>% 
+    distinct(ID, .keep_all = TRUE)
+  boston.weather <- boston.weather[, 1:4]
+  boston.weather <- boston.weather %>% filter(!is.na(PRCP))
+  
+  output$Boston.bar <- renderPlot({
+    return(GetBar(boston.crime, boston.weather, max.precip(), min.precip(), violence()))
+  })
+  
+  output$Boston.map <- renderLeaflet({
+    return(GetMap(boston.crime.with.weather, violence(), max.precip(), min.precip(), -71.06, 42.36))
+  })
+  
   ############## SAN FRAN ###############
   # SF Data Manipulation
   
@@ -86,14 +104,15 @@ my.server <- function(input, output) {
   })
 
   ############# CHICAGO ############
-  ch.crime <- read.csv("data/Chicago_Crime_Data.csv", stringsAsFactors = FALSE)
-  ch.crime$lat <- sapply(ch.crime$Location, GetX)
-  ch.crime$long <- sapply(ch.crime$Location, GetY)
+  ch.crime <- read_feather("data/Chicago_Crime.feather")
+  ch.crime$lat <- ch.crime$Lat
+  ch.crime$long <- ch.crime$Long
 
   ch.weather <- all.weather %>% 
                 filter(NAME == "CHICAGO 4.7 NE, IL US")
   
   ch.weather <- ch.weather[, 1:4]
+  ch.weather$DATE <- as.Date(ch.weather$DATE)
   
   output$Chicago.bar <- renderPlot({
     return(GetBar(ch.crime, ch.weather, max.precip(), min.precip(), violence()))

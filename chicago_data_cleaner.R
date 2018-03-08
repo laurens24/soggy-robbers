@@ -1,4 +1,4 @@
-library(dplyr)
+source("setup.R")
 
 # Holds all of Chicago's crime tuples with their ID, Date occured, 
 #   if the crime was violent, and the location in (Lat., Long.)
@@ -11,9 +11,11 @@ chicago.data <- read.csv('data/chicago_crime.csv',
                                                      "SEX OFFENSE",
                                                      "CRIM SEXUAL ASSAULT",
                                                      "HOMICIDE"),
-                       Date = as.Date(Date, "%m/%d/%Y")) %>%
-                # Remove the column used to calculate "Violent"
-                select(-Primary.Type) %>%
+                       Date = as.Date(Date, "%m/%d/%Y"),
+                       Description = Primary.Type,
+                       Lat = GetX(Location),
+                       Long = GetY(Location)) %>%
+                select(-Location) %>%
                 filter(Date <= "2018-02-08")
 
-write.csv(chicago.data, "data/Chicago_Crime_Data.csv")
+write_feather(chicago.data, "data/Chicago_Crime.feather")
