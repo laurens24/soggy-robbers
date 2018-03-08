@@ -19,7 +19,7 @@ GetY <- function(coordinates) {
 }
 
 # Returns the leaflet map
-GetMap <- function(crime.with.weather, violence, max, min, longitude, latitude) {
+GetMap <- function(crime.with.weather, violence, max, min, longitude, latitude, zoom) {
   if(violence == "Violent") {
     crime.with.weather <- crime.with.weather %>% filter(Violent == TRUE)
   } else if(violence == "Nonviolent") {
@@ -33,7 +33,7 @@ GetMap <- function(crime.with.weather, violence, max, min, longitude, latitude) 
     points <- crime.with.weather
   }
   
-  p <- leaflet() %>% addProviderTiles(providers$OpenStreetMap.HOT) %>% setView(longitude, latitude, zoom = 12) %>% 
+  p <- leaflet() %>% addProviderTiles(providers$OpenStreetMap.HOT) %>% setView(longitude, latitude, zoom = zoom) %>% 
     addCircleMarkers(data = points, lng = ~ long, lat = ~ lat, radius = 2, popup = ~ Short.Description)
   return(p)
 }
@@ -138,7 +138,7 @@ my.server <- function(input, output) {
   })
   
   output$Boston.map <- renderLeaflet({
-    return(GetMap(boston.crime.with.weather, violence()[1], max.precip()[1], min.precip()[1], -71.06, 42.36))
+    return(GetMap(boston.crime.with.weather, violence()[1], max.precip()[1], min.precip()[1], -71.06, 42.36, 12))
   })
   
   ############## SAN FRAN ###############
@@ -159,7 +159,7 @@ my.server <- function(input, output) {
   })
   
   output$SF.map <- renderLeaflet({
-    return(GetMap(sf.crime.with.weather, violence()[2], max.precip()[2], min.precip()[2], -122.42, 37.78))
+    return(GetMap(sf.crime.with.weather, violence()[2], max.precip()[2], min.precip()[2], -122.42, 37.78, 12))
   })
  
   ############# LA #################
@@ -181,7 +181,7 @@ my.server <- function(input, output) {
     la2.crime <- left_join(la2.crime, la.weather, by= c("Date"="DATE")) %>% 
       distinct(ID, .keep_all = TRUE)
     
-    return(GetMap(la2.crime, violence()[3], max.precip()[3], min.precip()[3], -118.2437, 34.0522))
+    return(GetMap(la2.crime, violence()[3], max.precip()[3], min.precip()[3], -118.2437, 34.0522, 10))
     
   })
 
@@ -204,7 +204,7 @@ my.server <- function(input, output) {
     ch.crime <- left_join(ch.crime, ch.weather, by=c("Date" = "DATE")) %>% 
       distinct(ID, .keep_all = TRUE)
     
-    return(GetMap(ch.crime, violence()[4], max.precip()[4], min.precip()[4], -87.6298, 41.8781))
+    return(GetMap(ch.crime, violence()[4], max.precip()[4], min.precip()[4], -87.6298, 41.8781, 10))
     
   })
 }
