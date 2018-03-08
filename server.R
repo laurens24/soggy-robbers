@@ -39,14 +39,23 @@ GetMap <- function(crime.with.weather, violence, max, min, longitude, latitude, 
 }
 
 GetBar <- function(crime, weather, max, min, violence) {
-  avg.violent <- filter(crime, Violent == TRUE) %>% group_by(Date) %>% summarize(Violent.total = n())
+  # Groups all of the Violent Crimes and totals each day
+  avg.violent <- filter(crime, Violent == TRUE) %>% 
+                 group_by(Date) %>% 
+                 summarize(Violent.total = n())
   
-  avg.nonviolent <- filter(crime, Violent == FALSE) %>% group_by(Date) %>% summarize(Nonviolent.total = n())
+  # Groups all of the Nonviolent Crimes and totals each day
+  avg.nonviolent <- filter(crime, Violent == FALSE) %>% 
+                    group_by(Date) %>% 
+                    summarize(Nonviolent.total = n())
   
-  avg.both <- group_by(crime, Date) %>% summarize(Both.total = n())
+  # Groups both Nonviolent and Violent Crimes and totals each day
+  avg.both <- group_by(crime, Date) %>% 
+              summarize(Both.total = n())
   
   colnames(weather) <- c("Station", "Name", "Date", "PRCP")
   
+  # Use the data from the radio buttons to determine which data to use
   avg.value = "0"
   if (violence == "Violent") {
     avg.value <- "Violent.total" %>% rlang::sym()
@@ -59,26 +68,43 @@ GetBar <- function(crime, weather, max, min, violence) {
     data.in.question <- avg.both
   }
   
+  # The data which will be plotted
   data.in.question <- left_join(data.in.question, weather, by = "Date")
   
+  # Creates breaks, which is a vector of the seperations that the
+  #   precipitation will be partitioned by.
   max.num <- max(data.in.question$PRCP, na.rm = TRUE)
   break.point <- ((max - min) / 5)
   first.point <- min + break.point
   breaks <- seq(first.point, max, break.point)
-  #breaks <- c(first.point, first.point + break.point, first.point + break.point * 2, first.point + break.point * 3, max)
   
+  # Takes in a precipitation value and uses the breaks calculated to
+  #   determine which partition the value belongs in.
   determine.break <- function(prcp) {
     point <- 0
     
-    ifelse(prcp <= breaks[1], point <- paste0(min, " - ", breaks[1]), 
-           ifelse(prcp <= breaks[2], point <- paste0(breaks[1], " - ", breaks[2]),
-                  ifelse(prcp <= breaks[3], point <- paste0(breaks[2], " - ", breaks[3]),
-                         ifelse(prcp <= breaks[4], point <- paste0(breaks[3], " - ", breaks[4]),
-                                ifelse(prcp <= breaks[5], point <- paste0(breaks[4], " - ", breaks[5]), point <- 0)))))
+    ifelse(prcp <= breaks[1], 
+           point <- paste0(min, " - ", breaks[1]), 
+           ifelse(prcp <= breaks[2], 
+                  point <- paste0(breaks[1], " - ", breaks[2]),
+                  ifelse(prcp <= breaks[3], 
+                         point <- paste0(breaks[2], " - ", breaks[3]),
+                         ifelse(prcp <= breaks[4], 
+                                point <- paste0(breaks[3], " - ", breaks[4]),
+                                ifelse(prcp <= breaks[5], 
+                                       point <- paste0(breaks[4],
+                                                       " - ", 
+                                                       breaks[5]), 
+                                       point <- 0)))))
   }
   
-  data.in.question <- data.in.question %>% mutate(points = determine.break(data.in.question$PRCP)) %>% filter(!is.na(points))
+  data.in.question <- data.in.question %>% 
+                      mutate(
+                        points = determine.break(data.in.question$PRCP)) %>%
+                      filter(!is.na(points))
   
+  # Selects the color of the bars; Red for Violent, Blue for Nonviolent,
+  #   and Purple for Both.
   crime.color <- "white"
   if (violence == "Violent") {
     crime.color <- "red"
@@ -88,16 +114,23 @@ GetBar <- function(crime, weather, max, min, violence) {
     crime.color <- "purple"
   }
   
-  
-  data.in.question <- data.in.question %>% select(PRCP, !!avg.value, points)
-  prcp.group <- group_by(data.in.question, points) %>% summarize(average = (sum(!!avg.value) / n()))
+  data.in.question <- data.in.question %>% 
+                      select(PRCP, !!avg.value, points)
+  # Calculate average crimes on days with the same rain-level
+  prcp.group <- group_by(data.in.question, points) %>% 
+                summarize(average = (sum(!!avg.value) / n()))
+
+  # Generate Plot
   la.bar <- ggplot(prcp.group) +
-    geom_bar(mapping = aes(x = points, y = average), stat="identity", fill = crime.color) +
-    geom_text(aes(x = points, y = average, label=round(average, digits = 2), vjust=-0.25)) +
-    labs(title = paste0("Average Number of ", violence, " Crimes vs Precipitation Levels"),
+    geom_bar(mapping = aes(x = points, y = average), 
+             stat="identity", 
+             fill = crime.color) +
+    geom_text(aes(x = points, y = average, 
+                  label=round(average, digits = 2), vjust=-0.25)) +
+    labs(title = paste0("Average Number of ", violence, 
+                        " Crimes vs Precipitation Levels"),
          x = "Precipitation", 
          y = "Average number of crimes")
-  
   
   return(la.bar)
 }

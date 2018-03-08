@@ -5,7 +5,7 @@ library(dplyr)
 chicago.data <- read.csv('data/chicago_crime.csv', 
                          stringsAsFactors = FALSE) %>%
                 # Add a boolean column "Violent" for if the crime was 
-                #   violent & change Date to be a date object
+                #   violent (as defined by the FBI) & change Date to be a date object
                 mutate(Violent = Primary.Type %in% c("ROBBERY",
                                                      "ASSAULT",
                                                      "SEX OFFENSE",
@@ -14,6 +14,7 @@ chicago.data <- read.csv('data/chicago_crime.csv',
                        Date = as.Date(Date, "%m/%d/%Y")) %>%
                 filter(Date <= "2018-02-08")
 
+# renames the description of the crime to our universal name
 colnames(chicago.data)[colnames(chicago.data) == "Primary.Type"] <- "Short.Description"
 
 write.csv(chicago.data, "data/Chicago_Crime_Data.csv")
