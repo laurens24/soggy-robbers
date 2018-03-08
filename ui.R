@@ -92,7 +92,8 @@ my.ui <- navbarPage("Put Title Here",
                                          lowest for the precipitation range of 0.9 to 1.2 for all crime types. The highest range of recipitation had the highest
                                          average number of violent crimes. Los Angeles' overall average number of crime is 616.41 which is lower than the average
                                          for the precipation range of 1.2 - 1.5 and very close to the range of 0 - 0.3.")),
-                 tabPanel("Crime Map", leafletOutput("LA.map"))
+                 tabPanel("Crime Map", leafletOutput("LA.map"),
+                          p("The map of Los Angeles above shows locations of 200 randomly selected crimes."))
                )
              )
            )),
