@@ -34,7 +34,7 @@ GetMap <- function(crime.with.weather, violence, max, min, longitude, latitude) 
   }
   
   p <- leaflet() %>% addProviderTiles(providers$OpenStreetMap.HOT) %>% setView(longitude, latitude, zoom = 12) %>% 
-    addCircleMarkers(data = points, lng = ~ long, lat = ~ lat, radius = 1)
+    addCircleMarkers(data = points, lng = ~ long, lat = ~ lat, radius = 1.5, popup = ~ Short.Description)
   return(p)
 }
 
