@@ -1,9 +1,18 @@
 library(shiny)
 library(ggplot2)
 library(dplyr)
-library(ggmap)
 library(leaflet)
 
+# Calculates and returns the first coordinate in a set 
+# of latitude/longitude coordinates (typically the latitude)
+#
+# Args:
+#   - coordinates: a string representing coordinates in the format
+#                 (coordinate1, coordinate2)
+#
+# Returns:
+#     a numeric value representing the first coordinate in the
+#     given string
 GetX <- function(coordinates) {
   vector.coordinates <- unlist(strsplit(coordinates, ","))
   x <- vector.coordinates[1]
@@ -11,6 +20,16 @@ GetX <- function(coordinates) {
   return(as.numeric(x))
 }
 
+# Calculates and returns the second coordinate in a set 
+# of latitude/longitude coordinates (typically the longitude)
+#
+# Args:
+#   - coordinates: a string representing coordinates in the format
+#                 (coordinate1, coordinate2)
+#
+# Returns:
+#     a numeric value representing the second coordinate in the
+#     given string
 GetY <- function(coordinates) {
   vector.coordinates <- unlist(strsplit(coordinates, ","))
   y <- vector.coordinates[2]
@@ -18,14 +37,37 @@ GetY <- function(coordinates) {
   return(as.numeric(y))
 }
 
-# Returns the leaflet map
+# Calculates and returns a leaflet map with clickable crime data. If the filters
+# applied result in a crime set with more than 200 values, a random selection
+# of the crimes are chosen to be plotted on the map. Otherwise, all crimes are
+# plotted on the map.
+#
+# Args:
+#     - crime.with.weather: a dataframe with crime and weather information. This dataframe
+#       should contain the following columns - Short.Description, PRCP, Violent(boolean),
+#       long, lat
+#     - violence: either "Violent", "Nonviolent", or another value representing both
+#     - max: the maximum precipitation amount selected by the user
+#     - min: the minimum precipitation amount selected by the user
+#     - longitude: the longitude of the center of the city being mapped
+#     - latitude: the latitude of the center of the city being mapped
+#     - zoom: the zoom level for the map to display as its default
+#
+# Returns:
+#     a leaflet map that shows the city in question with up to 200 crime points.
+#     the crime points can be clicked and a short description of each crime is shown
 GetMap <- function(crime.with.weather, violence, max, min, longitude, latitude, zoom) {
+  # filter for violent or nonviolent crimes, if selected by the user
   if(violence == "Violent") {
     crime.with.weather <- crime.with.weather %>% filter(Violent == TRUE)
   } else if(violence == "Nonviolent") {
     crime.with.weather <- crime.with.weather %>% filter(Violent == FALSE)
   }
+  
+  # filter for precipitation
   crime.with.weather <- crime.with.weather %>% filter(PRCP <= max & PRCP >= min)
+  
+  # get sample of 200 crimes, if there are that many
   length <- nrow(crime.with.weather)
   if(length >= 200) {
     points <- crime.with.weather[sample(length, 200), ]
@@ -33,6 +75,7 @@ GetMap <- function(crime.with.weather, violence, max, min, longitude, latitude, 
     points <- crime.with.weather
   }
   
+  # create leaflet map with plotted and interactive crimes
   p <- leaflet() %>% addProviderTiles(providers$OpenStreetMap.HOT) %>% setView(longitude, latitude, zoom = zoom) %>% 
     addCircleMarkers(data = points, lng = ~ long, lat = ~ lat, radius = 2, popup = ~ Short.Description)
   return(p)
@@ -137,16 +180,19 @@ GetBar <- function(crime, weather, max, min, violence) {
 
 my.server <- function(input, output) {
   
+  # returns user's violence filter selection
   violence <- reactive ({
     violence <- c(input$violence.b, input$violence.sf, input$violence.la, input$violence.c)
     return (violence)
   })
   
+  # return user's selection for maxiumum precipitation level in each city
   max.precip <- reactive ({
     precip <- c(input$precip.b[2], input$precip.sf[2], input$precip.la[2], input$precip.c[2])
     return (precip)
   })
-  
+
+  # return user's selection for minimum precipitation level in each city
   min.precip <- reactive({
     precip <- c(input$precip.b[1], input$precip.sf[1], input$precip.la[1], input$precip.c[1])
     return (precip)
@@ -156,6 +202,7 @@ my.server <- function(input, output) {
     
   ############### BOSTON #################
   
+  # Clean and join data before generating graph and map
   boston.crime <- read.csv("data/Boston_Crime_Data.csv", stringsAsFactors = FALSE)
   boston.crime$lat <- sapply(boston.crime$Location, GetX)
   boston.crime$long <- sapply(boston.crime$Location, GetY)
@@ -175,8 +222,8 @@ my.server <- function(input, output) {
   })
   
   ############## SAN FRAN ###############
-  # SF Data Manipulation
   
+  # Clean and join data before generating graph and map
   san.fran.crime <- read.csv("data/san_francisco_crime.csv", stringsAsFactors = FALSE)
   san.fran.crime$lat <- sapply(san.fran.crime$Location, GetX)
   san.fran.crime$long <- sapply(san.fran.crime$Location, GetY)
@@ -196,6 +243,8 @@ my.server <- function(input, output) {
   })
  
   ############# LA #################
+  
+  # Clean and join data before generating graph and map
   la.crime <- read.csv("data/los_angeles_crime.csv", stringsAsFactors = FALSE)
   la.crime <- filter(la.crime, Date <= as.Date("02/08/2018", format="%m/%d/%Y"))
   la.weather <- read.csv("data/LAsantamonica_weather.csv", stringsAsFactors = FALSE)
@@ -219,6 +268,8 @@ my.server <- function(input, output) {
   })
 
   ############# CHICAGO ############
+  
+  # Clean and join data before generating graph and map
   ch.crime <- read.csv("data/Chicago_Crime_Data.csv", stringsAsFactors = FALSE)
   ch.crime$lat <- sapply(ch.crime$Location, GetX)
   ch.crime$long <- sapply(ch.crime$Location, GetY)
