@@ -9,6 +9,8 @@ my.ui <- navbarPage("Soggy Robbers",     #page title
   tabPanel("Home", 
            mainPanel(p(h3("Soggy Robbers")),
                      p("Stephen Moxley, Kara Lee, Lauren Smith and Michael Hart"), tags$br(),
+                     tags$img(src='friends_umbrella.gif', width = 412, height = 232, 
+                              style="display: block; margin-left: 100px; margin-right: 100px;"), 
                      p(h3("About Our Project")),
                      p("Soggy Robbers provide users with the proper data to analyze trends and correlations between crime and
                        precipitation in 4 cities - Boston, San Francisco, Los Angeles and Chicago."), tags$br(),
