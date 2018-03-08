@@ -13,8 +13,8 @@ chicago.data <- read.csv('data/chicago_crime.csv',
                                                      "HOMICIDE"),
                        Date = as.Date(Date, "%m/%d/%Y"),
                        Description = Primary.Type,
-                       Lat = GetX(Location),
-                       Long = GetY(Location)) %>%
+                       lat = GetX(Location),
+                       long = GetY(Location)) %>%
                 select(-Location) %>%
                 filter(Date <= "2018-02-08")
 
