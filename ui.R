@@ -36,11 +36,22 @@ my.ui <- navbarPage("Put Title Here",
              mainPanel(
                tabsetPanel(
                  tabPanel("Precipitation Chart",
-                          plotOutput("Boston.bar")),
-                 tabPanel("Crime Map", leafletOutput("Boston.map"))
+                          plotOutput("Boston.bar"),
+                          p("The bar chart above shows the average number of crimes corresponding to each range of precipitation
+                            levels (in inches). The user can choose the crime type and the range of precipitation from the sidebar."),
+                          h3("Correlation between precipitation levels and crime activity in Boston:"),
+                          p("There does not appear to be significant differences in different precipitation levels and average crime
+                            activity in Boston. Average levels of precipitation are fairly stable across all crime types and
+                            precipitation levels, and the range of crime both violent and nonviolent crime activity is 26.2 crimes, which
+                            is not significant.")
+                    )
+                 ),
+                 tabPanel("Crime Map", leafletOutput("Boston.map"),
+                          p("The map of Boston shows 200 randomly selected crimes based on the users filters.")
+                 )
                )
              )
-           )),
+           ),
   
   tabPanel("San Francisco",
            sidebarLayout(
@@ -59,8 +70,18 @@ my.ui <- navbarPage("Put Title Here",
              mainPanel(
                tabsetPanel(
                  tabPanel("Precipitation Chart",
-                          plotOutput("SF.bar")),
-                 tabPanel("Crime Map", leafletOutput("SF.map"))
+                          plotOutput("SF.bar"),
+                          p("The bar chart above shows the average number of crimes corresponding to each range of precipitation
+                            levels (in inches). The user can choose the crime type and the range of precipitation from the sidebar."),
+                          h3("Correlation between precipitation levels and crime activity in San Francisco:"),
+                          p("There does not appear to be significant differences in different precipitation levels and average crime
+                            activity in San Francisco. Average levels of precipitation are fairly stable across all crime types and
+                            precipitation levels, and the range of crime both violent and nonviolent crime activity is 89.5 crimes, which
+                            is not significant.")
+                          ),
+                 tabPanel("Crime Map", leafletOutput("SF.map"),
+                          p("The map of San Francisco shows 200 randomly selected crimes based on the users filters.")
+                          )
                )
              )
            )),
@@ -83,17 +104,17 @@ my.ui <- navbarPage("Put Title Here",
                  tabPanel("Precipitation Chart",
                           plotOutput("LA.bar"),
                           p("The bar chart above shows the average number of crimes corresponding to each range of precipitation
-                                         levels. The user can choose the crime type and the range of precipitation from the sidebar. It should be noted that
+                                         levels (in inches). The user can choose the crime type and the range of precipitation from the sidebar. It should be noted that
                                          Los Angeles had 0 precipitation for 90% of the data gathered from January 1st, 2016 to February 8th, 2018.
                                          Since only 10% of the data corresponded to precipitation levels above 0, the results may not be the most accurate
                                          and cannot be used to imply causation"),
-                          p(h3("Correlation between precipitation levels and crime activity :")),
+                          p(h3("Correlation between precipitation levels and crime activity in Los Angeles:")),
                           p("For Los Angeles, no correlation was found between precipitation and crime. The average number of crimes was the
                                          lowest for the precipitation range of 0.9 to 1.2 for all crime types. The highest range of recipitation had the highest
                                          average number of violent crimes. Los Angeles' overall average number of crime is 616.41 which is lower than the average
                                          for the precipation range of 1.2 - 1.5 and very close to the range of 0 - 0.3.")),
                  tabPanel("Crime Map", leafletOutput("LA.map"),
-                          p("The map of Los Angeles above shows locations of 200 randomly selected crimes."))
+                          p("The map of Los Angeles above shows locations of 200 randomly selected crimes based on the users filters."))
                )
              )
            )),
@@ -114,8 +135,21 @@ my.ui <- navbarPage("Put Title Here",
              mainPanel(
                tabsetPanel(
                  tabPanel("Precipitation Chart",
-                          plotOutput("Chicago.bar")),
-                 tabPanel("Crime Map", leafletOutput("Chicago.map"))
+                          plotOutput("Chicago.bar"),
+                          p("The bar chart above shows the average number of crimes corresponding to each range of precipitation
+                            levels (in inches). The user can choose the crime type and the range of precipitation from the sidebar.
+                            It should be noted that there was only 1 day in which Chicago received more than 4 inches of precipitation,
+                            so there may be an innacurate representation of average crime at that precipitation level."),
+                          h3("Correlation between precipitation levels and crime activity in Chicago:"),
+                          p("There does appear to be significant differences in different precipitation levels and average crime
+                            activity in Chicago, but this is mostly due to the outlier above 4 inches of precipitation. 
+                            Without the outlier, average levels of precipitation are fairly stable across all crime types and
+                            precipitation levels. The range of crimes with the outlier is 172.5 crimes, but it is much lower without
+                            this observation.")
+                          ),
+                 tabPanel("Crime Map", leafletOutput("Chicago.map"),
+                          p("The map of Chicago shows 200 randomly selected crimes based on the users filters.")
+                 )
                )
              )
            )),
