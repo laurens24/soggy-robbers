@@ -141,6 +141,24 @@ my.server <- function(input, output) {
     
   ############### BOSTON #################
   
+  boston.crime <- read.csv("data/Boston_Crime_Data.csv", stringsAsFactors = FALSE)
+  boston.crime$lat <- sapply(boston.crime$Location, GetX)
+  boston.crime$long <- sapply(boston.crime$Location, GetY)
+  
+  boston.weather <- all.weather %>% filter(STATION == "US1MASF0001")
+  boston.crime.with.weather <- left_join(boston.crime, boston.weather, by=c("Date" = "DATE")) %>% 
+    distinct(ID, .keep_all = TRUE)
+  boston.weather <- boston.weather[, 1:4]
+  boston.weather <- boston.weather %>% filter(!is.na(PRCP))
+  
+  output$Boston.bar <- renderPlot({
+    return(GetBar(boston.crime, boston.weather, max.precip(), min.precip(), violence()))
+  })
+  
+  output$Boston.map <- renderLeaflet({
+    return(GetMap(boston.crime.with.weather, violence(), max.precip(), min.precip(), -71.06, 42.36))
+  })
+  
   ############## SAN FRAN ###############
   # SF Data Manipulation
   
