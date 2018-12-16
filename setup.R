@@ -7,17 +7,17 @@ library(feather)
 library(leaflet)
 
 GetX <- function(coordinates) {
-  vector.coordinates <- unlist(strsplit(coordinates, ","))
-  x <- vector.coordinates[1]
-  x <- substr(x, 2, nchar(x))
-  return(as.numeric(x))
+  substring(coordinates, 2) %>%
+    sub(",.*", "", .) %>%
+    as.numeric() %>%
+    return()
 }
 
 GetY <- function(coordinates) {
-  vector.coordinates <- unlist(strsplit(coordinates, ","))
-  y <- vector.coordinates[2]
-  y <- substr(y, 1, nchar(y) - 1)
-  return(as.numeric(y))
+  substring(coordinates, 1, nchar(coordinates) - 1) %>%
+    sub(".*,", "", .) %>%
+    as.numeric() %>%
+    return()
 }
 
 # Returns the leaflet map
