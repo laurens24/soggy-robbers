@@ -1,26 +1,20 @@
 source("setup.R")
 
-# Holds all of Chicago's crime tuples with their ID, Date occured, 
-#   if the crime was violent, and the location in (Lat., Long.)
-chicago.data <- read.csv('data/chicago_crime.csv', 
-                         stringsAsFactors = FALSE)
+# 'chicago_crime.csv' sourced from https://data.cityofchicago.org/Public-Safety/Crimes-2001-to-present-Dashboard/5cd6-ry5g
 
-chicago.data <- filter(chicago.data, Location != "")
+violent.categories <- c("ROBBERY",
+                        "ASSAULT",
+                        "SEX OFFENSE",
+                        "CRIM SEXUAL ASSAULT",
+                        "HOMICIDE")
 
-chicago.data$Latitude = sapply(chicago.data$Location, GetX)
-chicago.data$Longitude = sapply(chicago.data$Location, GetY)
-
-chicago.data <- chicago.data %>%
-    # Add a boolean column "Violent" for if the crime was 
-    #   violent & change Date to be a date object
-    mutate(Violent = Primary.Type %in% c("ROBBERY",
-                                         "ASSAULT",
-                                         "SEX OFFENSE",
-                                         "CRIM SEXUAL ASSAULT",
-                                         "HOMICIDE"),
-           Date = as.Date(Date, "%m/%d/%Y"),
-           Description = Primary.Type) %>%
-    filter(Date <= "2018-02-08")
-
-# Write the data in [ID, Date, Lat, Long, Violent, Description]
-write_feather(chicago.data[, c(1,2,5,6,7,8)], "data/chicago_crime.feather")
+read.csv('data/chicago_crime.csv', stringsAsFactors = FALSE) %>%
+    rename(Description = Primary.Type) %>%
+    filter(Location != "") %>%
+    mutate(Date = as.Date(Date, "%m/%d/%Y")) %>%
+    filter(Date >= as.Date("2016-01-01") & Date <= as.Date("2018-02-08")) %>%
+    mutate(Latitude = GetX(Location),
+           Longitude = GetY(Location), 
+           Violent = Description %in% violent.categories) %>%
+    select(ID, Date, Latitude, Longitude, Violent, Description) %>%
+    write_feather("data/chicago_crime.feather")
