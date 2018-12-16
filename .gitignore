@@ -1,2 +1,6 @@
 .RData
 .Rhistory
+data/boston_crime.csv
+data/chicago_crime.csv
+data/la_crime.csv
+data/sf_crime.csv
