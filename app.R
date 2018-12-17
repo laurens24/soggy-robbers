@@ -1,3 +1,4 @@
+source("setup.R")
 source("server.R")
 source("ui.R")
 

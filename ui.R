@@ -46,9 +46,11 @@ my.ui <- navbarPage("Soggy Robbers",     #page title
                  min = 0,
                  max = 1.5
                ),
-               radioButtons('violence.b', label = "Crimes Included", choices = c("Violent" = "Violent", 
-                                                                               "Nonviolent" = "Nonviolent", 
-                                                                               "Both" = "Violent and Nonviolent"))
+               radioButtons('violence.b', 
+                            label = "Crimes Included", 
+                            choices = c("Violent" = "Violent", 
+                                        "Nonviolent" = "Nonviolent", 
+                                        "Both" = "Violent and Nonviolent"))
                ),
              mainPanel(
                tabsetPanel(
@@ -87,9 +89,11 @@ my.ui <- navbarPage("Soggy Robbers",     #page title
                  min = 0,
                  max = 4.1
                ),
-               radioButtons('violence.sf', label = "Crimes Included", choices = c("Violent" = "Violent", 
-                                                                               "Nonviolent" = "Nonviolent", 
-                                                                               "Both" = "Violent and Nonviolent"))
+               radioButtons('violence.sf', 
+                            label = "Crimes Included", 
+                            choices = c("Violent" = "Violent", 
+                                        "Nonviolent" = "Nonviolent", 
+                                        "Both" = "Violent and Nonviolent"))
              ),
              mainPanel(
                tabsetPanel(
@@ -123,9 +127,11 @@ my.ui <- navbarPage("Soggy Robbers",     #page title
                  min = 0,
                  max = 1.4
                ),
-               radioButtons('violence.la', label = "Crimes Included", choices = c("Violent" = "Violent", 
-                                                                               "Nonviolent" = "Nonviolent", 
-                                                                               "Both" = "Violent and Nonviolent"))
+               radioButtons('violence.la', 
+                            label = "Crimes Included", 
+                            choices = c("Violent" = "Violent", 
+                                        "Nonviolent" = "Nonviolent", 
+                                        "Both" = "Violent and Nonviolent"))
              ),
              mainPanel(
                tabsetPanel(
@@ -166,9 +172,11 @@ my.ui <- navbarPage("Soggy Robbers",     #page title
                  min = 0,
                  max = 5.1
                ),
-               radioButtons('violence.c', label = "Crimes Included", choices = c("Violent" = "Violent", 
-                                                                               "Nonviolent" = "Nonviolent", 
-                                                                               "Both" = "Violent and Nonviolent"))
+               radioButtons('violence.c', 
+                            label = "Crimes Included", 
+                            choices = c("Violent" = "Violent", 
+                                        "Nonviolent" = "Nonviolent", 
+                                        "Both" = "Violent and Nonviolent"))
              ),
              #creates two tabs with a bar chart an interactive map
              mainPanel(
@@ -234,4 +242,3 @@ my.ui <- navbarPage("Soggy Robbers",     #page title
              p("Thanks for visiting our project!")
            ))
 )
-
