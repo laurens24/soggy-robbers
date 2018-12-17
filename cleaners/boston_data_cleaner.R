@@ -1,4 +1,4 @@
-source("setup.R")
+source("../setup.R")
 
 # 'boston_crime.csv' sourced from https://data.boston.gov/dataset/crime-incident-reports-august-2015-to-date-source-new-system
 
@@ -19,7 +19,7 @@ Refine <- function(.data, if.col, if.val, res.col, res.val) {
   return(.data)
 }
 
-read.csv('data/boston_crime.csv', stringsAsFactors = FALSE) %>% 
+read.csv('../data/boston_crime.csv', stringsAsFactors = FALSE) %>% 
     rename(ID = INCIDENT_NUMBER,
            Date = OCCURRED_ON_DATE,
            Latitude = Lat,
@@ -34,4 +34,4 @@ read.csv('data/boston_crime.csv', stringsAsFactors = FALSE) %>%
     mutate(Violent = Description %in% violent.categories,
            Description = toupper(Description)) %>%
     select(ID, Date, Latitude, Longitude, Violent, Description) %>%
-    write_feather("data/boston_crime.feather")
+    write_feather("../data/boston_crime.feather")

@@ -1,4 +1,4 @@
-source("setup.R")
+source("../setup.R")
 
 # 'la_crime.csv' sourced from https://data.lacity.org/A-Safe-City/Crime-Data-from-2010-to-Present/y8tr-7khq
 
@@ -11,7 +11,7 @@ violent.categories <- c("ASSAULT",
                         "RAPE", 
                         "SEXUAL")
 
-read.csv("data/la_crime.csv", stringsAsFactors = FALSE) %>%
+read.csv("../data/la_crime.csv", stringsAsFactors = FALSE) %>%
     rename(ID = DR.Number,
            Date = Date.Occurred,
            Description = Crime.Code.Description) %>%
@@ -22,4 +22,4 @@ read.csv("data/la_crime.csv", stringsAsFactors = FALSE) %>%
            Longitude = GetY(Location),
            Violent = Description %in% violent.categories) %>%
     select(ID, Date, Latitude, Longitude, Violent, Description) %>%
-    write_feather("data/la_crime.feather")
+    write_feather("../data/la_crime.feather")
