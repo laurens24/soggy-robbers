@@ -11,13 +11,15 @@ my.server <- function(input, output) {
     return (violence)
   })
   
-  min.precip <- reactive({
-    precip <- c(input$precip.b[1], input$precip.sf[1], input$precip.la[1], input$precip.c[1])
-    return (precip)
-  })
-  
+  # return user's selection for maxiumum precipitation level in each city
   max.precip <- reactive ({
     precip <- c(input$precip.b[2], input$precip.sf[2], input$precip.la[2], input$precip.c[2])
+    return (precip)
+  })
+
+  # return user's selection for minimum precipitation level in each city
+  min.precip <- reactive({
+    precip <- c(input$precip.b[1], input$precip.sf[1], input$precip.la[1], input$precip.c[1])
     return (precip)
   })
 
