@@ -4,3 +4,5 @@ data/boston_crime.csv
 data/chicago_crime.csv
 data/la_crime.csv
 data/sf_crime.csv
+data/LAsantamonica_weather.csv
+data/othercities_weather.csv
